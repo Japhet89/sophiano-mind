@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sophiano Mind</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to bottom right, #1f1c2c, #928dab);
+      color: #fff;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background-color: #fff;
+      color: #1f1c2c;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    nav button:hover {
+      background-color: #928dab;
+      color: #fff;
+    }
+
+    section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      resize: vertical;
+    }
+
+    .btn-save {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff;
+      color: #1f1c2c;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sophiano Mind</h1>
+    <p>By ASSOGBA Japhet Arcade Sophiano</p>
+  </header>
+
+  <nav>
+    <button onclick="showTab('journal')">📝 Journal Intime</button>
+    <button onclick="showTab('anniversaires')">🎂 Anniversaires</button>
+    <button onclick="showTab('roman')">📖 Création Roman</button>
+  </nav>
+
+  <main>
+    <section id="journal" class="active">
+      <h2>Mon Journal</h2>
+      <textarea id="journalInput" rows="10" placeholder="Exprime-toi librement..."></textarea>
+      <button class="btn-save" onclick="saveJournal()">💾 Sauvegarder</button>
+    </section>
+
+    <section id="anniversaires">
+      <h2>Anniversaires à ne pas oublier</h2>
+      <input type="text" id="nameInput" placeholder="Nom de l'ami(e)">
+      <input type="date" id="dateInput">
+      <button class="btn-save" onclick="addBirthday()">🎉 Ajouter</button>
+      <ul id="birthdayList"></ul>
+    </section>
+
+    <section id="roman">
+      <h2>Mon Roman</h2>
+      <textarea id="romanInput" rows="15" placeholder="Écris ton chef-d'œuvre ici..."></textarea>
+      <button class="btn-save" onclick="saveRoman()">💾 Sauvegarder</button>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Japhet Arcade Sophiano. Tous droits réservés.
+  </footer>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('section').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Journal
+    function saveJournal() {
+      const content = document.getElementById("journalInput").value;
+      localStorage.setItem("journal", content);
+      alert("Journal sauvegardé !");
+    }
+
+    // Anniversaires
+    function addBirthday() {
+      const name = document.getElementById("nameInput").value;
+      const date = document.getElementById("dateInput").value;
+      if (name && date) {
+        let list = JSON.parse(localStorage.getItem("birthdays")) || [];
+        list.push({ name, date });
+        localStorage.setItem("birthdays", JSON.stringify(list));
+        loadBirthdays();
+        document.getElementById("nameInput").value = "";
+        document.getElementById("dateInput").value = "";
+      } else {
+        alert("Remplis tous les champs !");
+      }
+    }
+
+    function loadBirthdays() {
+      const list = JSON.parse(localStorage.getItem("birthdays")) || [];
+      const ul = document.getElementById("birthdayList");
+      ul.innerHTML = "";
+      list.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.name} - ${entry.date}`;
+        ul.appendChild(li);
+      });
+    }
+
+    // Roman
+    function saveRoman() {
+      const content = document.getElementById("romanInput").value;
+      localStorage.setItem("roman", content);
+      alert("Roman sauvegardé !");
+    }
+
+    // Charger les contenus existants au démarrage
+    document.getElementById("journalInput").value = localStorage.getItem("journal") || "";
+    document.getElementById("romanInput").value = localStorage.getItem("roman") || "";
+    loadBirthdays();
+  </script>
+</body>
+</html>
